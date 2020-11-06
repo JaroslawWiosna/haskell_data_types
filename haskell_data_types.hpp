@@ -22,6 +22,14 @@ concept Callable = requires(C c, T t) {
 };
 
 template <typename T>
+auto has_inner_value(T a) = delete;
+
+template <typename T>
+auto has_inner_value(Maybe<T> a) {
+    return a.has_value;
+}
+
+template <typename T>
 auto inner_value(T a) = delete;
 
 template <typename T>
@@ -37,6 +45,9 @@ template <typename T, typename C> requires Callable<C, T>
 auto fmap(C fun, Maybe<T> f) {
     auto inner = inner_value(f);
     auto new_value = fun(inner);
+    if (not has_inner_value(f)) {
+        return Maybe<decltype(new_value)>{};
+    }
     //TODO: If does not have inner value return Maybe{false};
     return Maybe<decltype(new_value)>{true, fun(inner)};
 }
