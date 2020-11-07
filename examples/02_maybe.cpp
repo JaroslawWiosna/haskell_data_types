@@ -1,5 +1,6 @@
 #include "../haskell_data_types.hpp"
 
+#include <cassert>
 #include <iostream>
 
 int main() {
@@ -36,5 +37,7 @@ int main() {
         std::cout << "bar.has_value = " << bar.has_value << '\n';
         std::cout << "bar.value = " << bar.value << '\n';
         std::cout << '\n';
+        
+        assert(43 == bar.value);
     }
 }
