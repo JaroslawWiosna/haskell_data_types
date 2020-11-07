@@ -74,4 +74,12 @@ int main() {
         }
         f(empty);
     }
+    {
+        auto empty = mempty(std::string{});
+        auto foo = std::string{"Text."};
+        auto bar = mappend(empty, foo);
+        assert(foo == bar);
+        
+        assert(std::string{"Two words"} == mappend(std::string{"Two "}, std::string{"words"}));
+    }
 }

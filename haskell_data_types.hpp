@@ -248,5 +248,17 @@ bool operator==(const MaxInt &a, const MaxInt &b) {
     return a.value == b.value;
 }
 
+// MONOID: STRING
+
+static std::string mempty(std::string a = {}) {
+    return {};
+}
+
+static std::string mappend(const std::string &a, const std::string &b) {
+    std::string res{a};
+    res += b;
+    return res;
+}
+
 #endif // HASKELL_DATA_TYPES_HPP_
 
