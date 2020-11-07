@@ -1,6 +1,8 @@
-CXX_FLAGS=-ggdb -std=c++2a -fconcepts-diagnostics-depth=3
+CXX_FLAGS=-ggdb -std=c++20 -fconcepts-diagnostics-depth=3
 INC?=
 LIB?=
+CXX=c++
+CC=cc
 
 .PHONY: all
 all: 01_hello_world \
@@ -8,10 +10,6 @@ all: 01_hello_world \
 	03_either
 
 01_hello_world: 01_hello_world.cpp
-	echo $(CXX)
-	echo $(CXX_FLAGS)
-	echo $(INC)
-	echo $(LIB)
 	$(CXX) $(CXX_FLAGS) $(INC) 01_hello_world.cpp -o hello_world $(LIB)
 
 02_maybe: 02_maybe.cpp
