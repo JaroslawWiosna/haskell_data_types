@@ -57,6 +57,11 @@ int main() {
         bar != baz;
         bay != baz;
         f(bar, bay, baz);
+    }
+    {
+        auto foo = Maybe<std::string>{true, "lorem ipsum"};
+        auto bar = fmap([](std::string s){return s.size();}, foo);
 
+        assert(11 == bar.value);
     }
 }
