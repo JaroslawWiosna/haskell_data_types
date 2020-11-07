@@ -126,6 +126,8 @@ concept Monoid = requires (T a, T b) {
     { mappend(a, b) } -> std::convertible_to<T>; 
 };
 
+// MONOID: ANY
+
 struct Any {
     bool value;
 
@@ -155,6 +157,8 @@ bool operator==(const Any &a, const Any &b) {
     return a.value == b.value;
 }
 
+// MONOID: ALL
+
 struct All {
     bool value;
 
@@ -181,6 +185,66 @@ static All mappend(All a, All b) {
 }
 
 bool operator==(const All &a, const All &b) {
+    return a.value == b.value;
+}
+
+// MONOID: MIN INT
+
+struct MinInt {
+    int value;
+
+    static MinInt min(MinInt a, MinInt b) {
+        return (a.value < b.value) ? a : b;
+    }
+    // TODO: replace THE_BIGGEST_INT with INT_MAX_VALUE
+    static constexpr const int THE_BIGGEST_INT = 42'000;
+    static MinInt mempty(MinInt a = {}) {
+        return MinInt{THE_BIGGEST_INT};
+    }
+    static MinInt mappend(MinInt a, MinInt b) {
+        return MinInt::min(a, b);
+    }
+};
+
+static MinInt mempty(MinInt a = {}) {
+    return MinInt::mempty();
+}
+
+static MinInt mappend(MinInt a, MinInt b) {
+    return MinInt::mappend(a, b);
+}
+
+bool operator==(const MinInt &a, const MinInt &b) {
+    return a.value == b.value;
+}
+
+// MONOID: MAX INT
+
+struct MaxInt {
+    int value;
+
+    static MaxInt max(MaxInt a, MaxInt b) {
+        return (a.value > b.value) ? a : b;
+    }
+    // TODO: replace THE_LOWEST_INT with INT_MAX_VALUE
+    static constexpr const int THE_LOWEST_INT = -42'000;
+    static MaxInt mempty(MaxInt a = {}) {
+        return MaxInt{THE_LOWEST_INT};
+    }
+    static MaxInt mappend(MaxInt a, MaxInt b) {
+        return MaxInt::max(a, b);
+    }
+};
+
+static MaxInt mempty(MaxInt a = {}) {
+    return MaxInt::mempty();
+}
+
+static MaxInt mappend(MaxInt a, MaxInt b) {
+    return MaxInt::mappend(a, b);
+}
+
+bool operator==(const MaxInt &a, const MaxInt &b) {
     return a.value == b.value;
 }
 

@@ -42,4 +42,36 @@ int main() {
         }
         f(empty);
     }
+    {
+        auto empty = MinInt::mempty();
+        {
+            auto foo = MinInt{32};
+            auto bar = MinInt::mappend(foo, empty);
+    
+            assert(foo == bar);
+        }
+        {
+            auto foo = MinInt{-111};
+            auto bar = MinInt::mappend(foo, empty);
+    
+            assert(foo == bar);
+        }
+        f(empty);
+    }
+    {
+        auto empty = MaxInt::mempty();
+        {
+            auto foo = MaxInt{32};
+            auto bar = MaxInt::mappend(foo, empty);
+    
+            assert(foo == bar);
+        }
+        {
+            auto foo = MaxInt{-111};
+            auto bar = MaxInt::mappend(foo, empty);
+    
+            assert(foo == bar);
+        }
+        f(empty);
+    }
 }
