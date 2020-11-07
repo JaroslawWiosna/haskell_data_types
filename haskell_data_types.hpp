@@ -55,9 +55,19 @@ concept Eq = requires(T a, T b) {
 
 // CALLABLE
 
+template<typename C>
+concept Callable0 = requires(C c) {
+    { c.operator() };
+};
+
 template<typename C, typename T>
-concept Callable = requires(C c, T t) {
+concept Callable1 = requires(C c, T t) {
     { c.operator()(t) };
+};
+
+template<typename C, typename T>
+concept Callable2 = requires(C c, T t1, T t2) {
+    { c.operator()(t1, t2) };
 };
 
 // HAS INNER VALUE
@@ -86,7 +96,7 @@ auto inner_value(Maybe<T> a) {
 
 // FMAP
 
-template <typename T, typename C> requires Callable<C, T>
+template <typename T, typename C> requires Callable1<C, T>
 auto fmap(C fun, Maybe<T> f) {
     auto inner = inner_value(f);
     auto new_value = fun(inner);
@@ -96,6 +106,159 @@ auto fmap(C fun, Maybe<T> f) {
     return Maybe<decltype(new_value)>{true, fun(inner)};
 }
 
+// MONOID
+// Prelude Data.Monoid> :info Monoid
+// class Monoid a where
+//   mempty :: a
+//   mappend :: a -> a -> a
+//   mconcat :: [a] -> a
+// 
+// 0   , +  , int
+// 1   , *  , int
+// Inf , min, int, because min(42, Inf) == 42
+// -Inf, max, int, because max(42, -Inf) == 42
+// ""  , ++ , string
+//
+
+template <typename T> 
+concept Monoid = requires (T a, T b) {
+    { mempty(a) } -> std::convertible_to<T>;
+    { mappend(a, b) } -> std::convertible_to<T>; 
+};
+
+// MONOID: ANY
+
+struct Any {
+    bool value;
+
+    static Any mempty(bool a = false) { 
+       return Any{false};
+    }
+    static Any mappend(bool a, bool b) { 
+       return Any{a or b};
+    }
+    static Any mempty(Any a) { 
+       return Any{false};
+    }
+    static Any mappend(Any a, Any b) { 
+       return Any{a.value or b.value};
+    }
+};
+
+static Any mempty(Any a = {}) {
+    return Any::mempty();
+}
+
+static Any mappend(Any a, Any b) {
+    return Any::mappend(a, b);
+}
+
+bool operator==(const Any &a, const Any &b) {
+    return a.value == b.value;
+}
+
+// MONOID: ALL
+
+struct All {
+    bool value;
+
+    static All mempty(bool a = false) { 
+       return All{true};
+    }
+    static All mappend(bool a, bool b) { 
+       return All{a and b};
+    }
+    static All mempty(All a) { 
+       return All{true};
+    }
+    static All mappend(All a, All b) { 
+       return All{a.value and b.value};
+    }
+};
+
+static All mempty(All a = {}) {
+    return All::mempty();
+}
+
+static All mappend(All a, All b) {
+    return All::mappend(a, b);
+}
+
+bool operator==(const All &a, const All &b) {
+    return a.value == b.value;
+}
+
+// MONOID: MIN INT
+
+struct MinInt {
+    int value;
+
+    static MinInt min(MinInt a, MinInt b) {
+        return (a.value < b.value) ? a : b;
+    }
+    // TODO: replace THE_BIGGEST_INT with INT_MAX_VALUE
+    static constexpr const int THE_BIGGEST_INT = 42'000;
+    static MinInt mempty(MinInt a = {}) {
+        return MinInt{THE_BIGGEST_INT};
+    }
+    static MinInt mappend(MinInt a, MinInt b) {
+        return MinInt::min(a, b);
+    }
+};
+
+static MinInt mempty(MinInt a = {}) {
+    return MinInt::mempty();
+}
+
+static MinInt mappend(MinInt a, MinInt b) {
+    return MinInt::mappend(a, b);
+}
+
+bool operator==(const MinInt &a, const MinInt &b) {
+    return a.value == b.value;
+}
+
+// MONOID: MAX INT
+
+struct MaxInt {
+    int value;
+
+    static MaxInt max(MaxInt a, MaxInt b) {
+        return (a.value > b.value) ? a : b;
+    }
+    // TODO: replace THE_LOWEST_INT with INT_MAX_VALUE
+    static constexpr const int THE_LOWEST_INT = -42'000;
+    static MaxInt mempty(MaxInt a = {}) {
+        return MaxInt{THE_LOWEST_INT};
+    }
+    static MaxInt mappend(MaxInt a, MaxInt b) {
+        return MaxInt::max(a, b);
+    }
+};
+
+static MaxInt mempty(MaxInt a = {}) {
+    return MaxInt::mempty();
+}
+
+static MaxInt mappend(MaxInt a, MaxInt b) {
+    return MaxInt::mappend(a, b);
+}
+
+bool operator==(const MaxInt &a, const MaxInt &b) {
+    return a.value == b.value;
+}
+
+// MONOID: STRING
+
+static std::string mempty(std::string a = {}) {
+    return {};
+}
+
+static std::string mappend(const std::string &a, const std::string &b) {
+    std::string res{a};
+    res += b;
+    return res;
+}
 
 #endif // HASKELL_DATA_TYPES_HPP_
 
