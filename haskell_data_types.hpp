@@ -11,8 +11,17 @@ void hello_world() {
 
 template<typename T>
 struct Maybe {
-    bool has_value;
-    T value;
+    bool has_value{};
+    T value{};
+};
+
+// EITHER
+
+template<typename Left, typename Right>
+struct Either {
+    bool be_right{};
+    Left l{};
+    Right r{};
 };
 
 // CALLABLE
