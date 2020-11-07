@@ -15,6 +15,17 @@ struct Maybe {
     T value{};
 };
 
+template<typename T1, typename T2>
+bool operator==(const Maybe<T1> &a, const Maybe<T2> &b) {
+    if (not a.has_value && not b.has_value) {
+        return false;
+    } else if (a.has_value && b.has_value) {
+        return a.value == b.value;
+    } else {
+        return false;
+    }
+}
+
 // EITHER
 
 template<typename Left, typename Right>
@@ -22,6 +33,24 @@ struct Either {
     bool be_right{};
     Left l{};
     Right r{};
+};
+
+template<typename Left1, typename Right1, typename Left2, typename Right2>
+bool operator==(Either<Left1, Right1> &a, Either<Left2, Right2> &b) {
+    if (a.be_right and b.be_right) {
+        return a.r == b.r;
+    }
+    if ((not a.be_right) and (not b.be_right)) {
+        return a.l == b.l;
+    }
+    return {};
+}
+
+// EQ
+
+template<typename T>
+concept Eq = requires(T a, T b) {
+    { operator==(a,b) };
 };
 
 // CALLABLE
