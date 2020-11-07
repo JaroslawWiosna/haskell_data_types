@@ -8,7 +8,8 @@ CC=cc
 all: hello_world \
 	maybe \
 	either \
-	eq
+	eq \
+	monoid
 
 hello_world: 01_hello_world.cpp
 	$(CXX) $(CXX_FLAGS) $(INC) 01_hello_world.cpp -o hello_world $(LIB)
@@ -22,10 +23,14 @@ either: 03_either.cpp
 eq: 04_eq.cpp
 	$(CXX) $(CXX_FLAGS) $(INC) 04_eq.cpp -o eq $(LIB)
 
+monoid: 05_monoid.cpp
+	$(CXX) $(CXX_FLAGS) $(INC) 05_monoid.cpp -o monoid $(LIB)
+
 .PHONY: clean
 clean:
 	rm -f hello_world
 	rm -f maybe
 	rm -f either
 	rm -f eq
+	rm -f monoid
 
