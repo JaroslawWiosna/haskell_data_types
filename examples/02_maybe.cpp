@@ -3,6 +3,11 @@
 #include <cassert>
 #include <iostream>
 
+template<typename T>
+bool f(T a, T b, T c) requires Eq<T> {
+    return {};
+}
+
 int main() {
     {
         auto foo = Maybe<int>{true, 42};
@@ -39,5 +44,19 @@ int main() {
         std::cout << '\n';
         
         assert(43 == bar.value);
+    }
+    {
+        auto bar = Maybe<int>{true, 20};
+        auto bay = Maybe<int>{true, 400};
+        auto baz = Maybe<int>{};
+
+        bar == bay;
+        bar == baz;
+        bay == baz;
+        bar != bay;
+        bar != baz;
+        bay != baz;
+        f(bar, bay, baz);
+
     }
 }
