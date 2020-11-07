@@ -119,46 +119,70 @@ auto fmap(C fun, Maybe<T> f) {
 // -Inf, max, int, because max(42, -Inf) == 42
 // ""  , ++ , string
 //
-template <typename T, typename C2, typename C0> requires Callable2<C2, T> && Callable1<C0, T>
-struct Monoid {
-    static T mempty() {
-        C0 c;
-        T t;
-        return c(t);
+
+template <typename T> 
+concept Monoid = requires (T a, T b) {
+    { mempty(a) } -> std::convertible_to<T>;
+    { mappend(a, b) } -> std::convertible_to<T>; 
+};
+
+struct Any {
+    bool value;
+
+    static Any mempty(bool a = false) { 
+       return Any{false};
     }
-    static T mappend(T a, T b) {
-        C2 c{};
-        T res = c(a, b);
-        return {};
+    static Any mappend(bool a, bool b) { 
+       return Any{a or b};
+    }
+    static Any mempty(Any a) { 
+       return Any{false};
+    }
+    static Any mappend(Any a, Any b) { 
+       return Any{a.value or b.value};
     }
 };
 
-//static int add(int a, int b) {
-//    return a + b;
-//}
+static Any mempty(Any a = {}) {
+    return Any::mempty();
+}
 
-#if 0
-template <>
-struct Monoid<int, decltype([](int a, int b){a+b;} -> int), decltype([](int x){return 0;})> {
-    static int mempty() {
-        return {};
+static Any mappend(Any a, Any b) {
+    return Any::mappend(a, b);
+}
+
+bool operator==(const Any &a, const Any &b) {
+    return a.value == b.value;
+}
+
+struct All {
+    bool value;
+
+    static All mempty(bool a = false) { 
+       return All{true};
     }
-    static int mappend(int a, int b) {
-        return {};
+    static All mappend(bool a, bool b) { 
+       return All{a and b};
+    }
+    static All mempty(All a) { 
+       return All{true};
+    }
+    static All mappend(All a, All b) { 
+       return All{a.value and b.value};
     }
 };
-#endif
 
-using MonoidIntPlus = Monoid<int, decltype([](int a, int b){a+b;}), decltype([](int x){return 0;})>;
+static All mempty(All a = {}) {
+    return All::mempty();
+}
 
-#if 0
-template<typename C, typename T>
-concept Monoid = requires(T t, T a, T b) {
-    { t.mempty() };
-    { t.mappend(a, b) };
-};
-#endif
+static All mappend(All a, All b) {
+    return All::mappend(a, b);
+}
 
+bool operator==(const All &a, const All &b) {
+    return a.value == b.value;
+}
 
 #endif // HASKELL_DATA_TYPES_HPP_
 

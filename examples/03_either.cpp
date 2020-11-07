@@ -4,14 +4,6 @@
 #include <string>
 
 int main() {
-    auto foo = Either<int, std::string>{true, {}, "This is foo!"};
-    {
-        foo.r += " Welcome everybody!";
-
-        std::cout << "auto foo = Either<int, std::string>"
-                  <<"{true, {}, \"This is foo!\"};" << '\n';
-        std::cout << "foo.r += \" Welcome everybody!\";" << '\n';
-        // std::cout << "foo.r == " << foo.r << '\n';
-
-    }
+    auto foo = Either<int, double>{true, {}, 42.0};
+    foo.r += 1;
 }
