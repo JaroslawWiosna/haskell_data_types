@@ -300,16 +300,31 @@ bool operator==(const MaxInt &a, const MaxInt &b) {
 }
 
 // MONOID: STRING
+#if 0
+struct StringMonoid {
+    std::string value{};
 
-static std::string mempty(std::string a = {}) {
-    return {};
+    static StringMonoid mempty(StringMonoid a = StringMonoid{}) {
+        return StringMonoid{};
+    }
+    static StringMonoid mappend(StringMonoid a, StringMonoid b) {
+        std::string res{a.value};
+        res += b.value;
+        return StringMonoid{res};
+    }
+};
+
+static StringMonoid mempty(StringMonoid a = StringMonoid{}) {
+    return StringMonoid{};
 }
 
-static std::string mappend(const std::string &a, const std::string &b) {
-    std::string res{a};
-    res += b;
-    return res;
+static StringMonoid mappend(const StringMonoid &a, const StringMonoid &b) {
+    return StringMonoid::mappend(a, b);
 }
 
+bool operator==(const StringMonoid &a, const StringMonoid &b) {
+    return a.value == b.value;
+}
+#endif
 #endif // HASKELL_DATA_TYPES_HPP_
 
