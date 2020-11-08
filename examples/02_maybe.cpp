@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <optional>
 
 template<typename T>
 bool f(T a, T b, T c) requires Eq<T> {
@@ -63,5 +64,33 @@ int main() {
         auto bar = fmap([](std::string s){return s.size();}, foo);
 
         assert(11 == bar.value);
+    }
+    {
+        {
+            auto foo = std::optional<std::string>{"hello world"};
+            auto bar = std::optional<std::string>{std::nullopt};
+
+            assert(std::string{"hello world"} == foo.value_or(std::string{"NOTHING"}));
+            assert(std::string{"NOTHING"}     == bar.value_or(std::string{"NOTHING"}));
+
+            // assert(11 == fmap([](std::string s){return s.size();}, foo).value_or{"NOTHING"});
+            // assert(0  == fmap([](std::string s){return s.size();}, bar).value_or{"NOTHING"});
+
+            assert(11 == (foo.has_value() ? foo.value().size() : 0)); // tedious because you have to type foo twice
+            assert(0  == (bar.has_value() ? bar.value().size() : 0)); // tedious because you have to type bar twice
+
+            assert(11 == foo.value_or(std::string{}).size()); // tedious because you have to know what value of std::string return 0 on size() the upfront
+            assert(0  == bar.value_or(std::string{}).size()); // tedious because you have to know what value of std::string return 0 on size() the upfront
+        }
+        {
+            auto foo = Maybe<std::string>{true, std::string{"hello world"}};
+            auto bar = Maybe<std::string>{};
+
+            assert(std::string{"fmapped"} == fmap([](std::string s){return std::string{"fmapped"};}, foo).value_or(std::string{"NOTHING"}));
+            assert(std::string{"NOTHING"} == fmap([](std::string s){return std::string{"fmapped"};}, bar).value_or(std::string{"NOTHING"}));
+
+            //assert(static_cast<int>(11) == (int)maybe(0, [](std::string s){return s.size();}, foo));
+            //assert(static_cast<int>(0)  == (int)maybe(0, [](std::string s){return s.size();}, bar));
+        }
     }
 }

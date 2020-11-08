@@ -40,6 +40,7 @@
 #define HASKELL_DATA_TYPES_HPP_
 
 #include <iostream>
+#include <utility>
 
 void hello_world() {
     std::cout << "Hello! " << '\n';
@@ -51,6 +52,10 @@ template<typename T>
 struct Maybe {
     bool has_value{};
     T value{};
+
+    T value_or(T default_val) {
+        return (has_value ? value : default_val);
+    }
 };
 
 template<typename T1, typename T2>
@@ -305,6 +310,24 @@ auto maybe(D default_val, C1 c, Maybe<T> m) {
         return c(m.value);
     } else {
         return default_val;
+    }
+}
+
+// either function
+// either                  :: (a -> c) -> (b -> c) -> Either a b -> c
+// either f _ (Left x)     =  f x
+// either _ g (Right y)    =  g y
+template
+<typename L, 
+ typename R,
+ typename CL,
+ typename CR> requires Callable1<CL, L> && Callable1<CR, R>
+auto either(CL cl, CR cr, Either<L, R> e) {
+    static_assert(std::is_same<decltype(std::declval<CL>().operator()(e.l)), decltype(std::declval<CR>().operator()(e.r))>::value, "The return type of both CL function and CR function MUST be the same. This is intended behaviour of function either");
+    if (e.be_right) {
+        return cr(e.r);
+    } else {
+        return cl(e.l);
     }
 }
 
