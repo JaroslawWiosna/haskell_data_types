@@ -29,6 +29,7 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 // Changelog
+//   0.1.1 Use only regular `mappend` and `mempty` instead of static functions
 //   0.1.0 Maybe
 //         Either
 //         fmap for Maybe
