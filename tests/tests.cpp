@@ -19,16 +19,19 @@ void test(bool b) {
     (b ? ++passed : ++failed);
 }
 
-template <typename T>
-bool is_printable(T t) { return false; }
-
-template <>
-bool is_printable(int t) { return true; }
-
 template <typename Expected, typename Actual> 
 void expect_eq(Expected e, Actual a, std::string desc, const char *file, int line) {
-    ((e == a) ? ++passed : ++failed);
     if (e == a) {
+        ++passed;
+    } else {
+        ++failed;
+        std::cout << file << ':' << line << ' ' << desc << "\n";
+    }
+}
+
+template <typename Expected, typename Actual> 
+void expect_neq(Expected e, Actual a, std::string desc, const char *file, int line) {
+    if (e != a) {
         ++passed;
     } else {
         ++failed;
@@ -38,6 +41,9 @@ void expect_eq(Expected e, Actual a, std::string desc, const char *file, int lin
 
 #define EXPECT_EQ(val1, val2, val3) \
     expect_eq(val1, val2, val3, __FILE__, __LINE__);
+
+#define EXPECT_NEQ(val1, val2, val3) \
+    expect_neq(val1, val2, val3, __FILE__, __LINE__);
 
 int main() {
     {
@@ -53,10 +59,16 @@ int main() {
         EXPECT_EQ(foo, bar, std::string{"Two different instances of zero initialized maybe should be equal"});
     }
     {
-        auto foo = Maybe<int>{};
-        auto bar = Maybe<float>{};
+        auto foo = Maybe<int>{true, 42};
+        auto bar = Maybe<float>{true, 42};
 
-        EXPECT_EQ(foo, bar, std::string{"Two different instances of zero initialized maybe are not equal"});
+        EXPECT_EQ(foo, bar, "Two different instances of maybe should be equal if the inner values are equal");
+    }
+    {
+        auto foo = Maybe<int>{};
+        auto bar = Maybe<float>{true, 42};
+
+        EXPECT_NEQ(foo, bar, "Maybe without inner value should not be equal with maybe with inner value");
     }
     {
         auto foo = Either<int, double>{true, {}, 42.0};
