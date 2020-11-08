@@ -1,4 +1,4 @@
-CXX_FLAGS=-ggdb -std=c++20 -fconcepts-diagnostics-depth=3
+CXX_FLAGS=-ggdb -std=c++20 -fconcepts -fconcepts-diagnostics-depth=3
 INC?=
 LIB?=
 CXX=c++

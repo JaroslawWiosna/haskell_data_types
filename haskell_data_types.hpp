@@ -50,7 +50,7 @@ struct Maybe {
 template<typename T1, typename T2>
 bool operator==(const Maybe<T1> &a, const Maybe<T2> &b) {
     if (not a.has_value && not b.has_value) {
-        return false;
+        return true;
     } else if (a.has_value && b.has_value) {
         return a.value == b.value;
     } else {

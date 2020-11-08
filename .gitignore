@@ -2,3 +2,5 @@ examples/*
 
 !examples/*.cpp
 !examples/Makefile
+
+tests/tests
