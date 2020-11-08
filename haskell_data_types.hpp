@@ -65,6 +65,10 @@ struct Either {
     bool be_right{};
     Left l{};
     Right r{};
+
+    auto value() {
+        return (be_right ? r : l);
+    }
 };
 
 template<typename Left1, typename Right1, typename Left2, typename Right2>
@@ -137,6 +141,21 @@ auto fmap(C fun, Maybe<T> f) {
     }
     return Maybe<decltype(new_value)>{true, fun(inner)};
 }
+
+template <typename Left, typename Right, typename C> requires Callable1<C, Right>
+auto fmap(C fun, Either<Left, Right> e) {
+    if (not e.be_right) {
+        return e;
+    }
+    auto inner = e.r;
+    auto new_value = fun(inner);
+//    if (not has_inner_value(f)) {
+//        return Maybe<decltype(new_value)>{};
+//    }
+    return Either<Left, decltype(new_value)>{true, e.l, new_value};
+}
+
+
 
 // MONOID
 // Prelude Data.Monoid> :info Monoid
