@@ -4,3 +4,8 @@ examples/*
 !examples/Makefile
 
 tests/tests
+
+*.gcov
+*.gcda
+*.gcno
+
