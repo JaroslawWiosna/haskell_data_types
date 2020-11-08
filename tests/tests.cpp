@@ -128,16 +128,16 @@ int main() {
     }
     // MONOIDS: ANY
     {
-        auto empty = Any::mempty();
+        auto empty = mempty(Any{});
         {
             auto foo = Any{false};
-            auto bar = Any::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
         {
             auto foo = Any{true};
-            auto bar = Any::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
@@ -146,16 +146,16 @@ int main() {
     }
     // MONOIDS: ALL
     {
-        auto empty = All::mempty();
+        auto empty = mempty(All{});
         {
             auto foo = All{false};
-            auto bar = All::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
         {
             auto foo = All{true};
-            auto bar = All::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
@@ -164,16 +164,16 @@ int main() {
     }
     // MONOIDS: MIN INT
     {
-        auto empty = MinInt::mempty();
+        auto empty = mempty(MinInt{});
         {
             auto foo = MinInt{32};
-            auto bar = MinInt::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
         {
             auto foo = MinInt{-111};
-            auto bar = MinInt::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
@@ -182,16 +182,16 @@ int main() {
     }
     // MONOID: MAX INT
     {
-        auto empty = MaxInt::mempty();
+        auto empty = mempty(MaxInt{});
         {
             auto foo = MaxInt{32};
-            auto bar = MaxInt::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }
         {
             auto foo = MaxInt{-111};
-            auto bar = MaxInt::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             EXPECT_EQ(foo, bar, "mempty should be neutral");
         }

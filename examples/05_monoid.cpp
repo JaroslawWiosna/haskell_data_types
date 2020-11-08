@@ -10,16 +10,16 @@ bool f(T a) requires Monoid<T> {
 
 int main() {
     {
-        auto empty = Any::mempty();
+        auto empty = mempty(Any{});
         {
             auto foo = Any{false};
-            auto bar = Any::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             assert(foo == bar);
         }
         {
             auto foo = Any{true};
-            auto bar = Any::mappend(foo, empty);
+            auto bar = mappend(foo, empty);
     
             assert(foo == bar);
         }

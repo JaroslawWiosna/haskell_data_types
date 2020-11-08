@@ -186,27 +186,14 @@ concept Monoid = requires (T a, T b) {
 
 struct Any {
     bool value;
-
-    static Any mempty(bool a = false) { 
-       return Any{false};
-    }
-    static Any mappend(bool a, bool b) { 
-       return Any{a or b};
-    }
-    static Any mempty(Any a) { 
-       return Any{false};
-    }
-    static Any mappend(Any a, Any b) { 
-       return Any{a.value or b.value};
-    }
 };
 
 static Any mempty(Any a = {}) {
-    return Any::mempty();
+    return Any{false};
 }
 
 static Any mappend(Any a, Any b) {
-    return Any::mappend(a, b);
+    return Any{a.value or b.value};
 }
 
 bool operator==(const Any &a, const Any &b) {
@@ -217,27 +204,14 @@ bool operator==(const Any &a, const Any &b) {
 
 struct All {
     bool value;
-
-    static All mempty(bool a = false) { 
-       return All{true};
-    }
-    static All mappend(bool a, bool b) { 
-       return All{a and b};
-    }
-    static All mempty(All a) { 
-       return All{true};
-    }
-    static All mappend(All a, All b) { 
-       return All{a.value and b.value};
-    }
 };
 
 static All mempty(All a = {}) {
-    return All::mempty();
+    return All{true};
 }
 
 static All mappend(All a, All b) {
-    return All::mappend(a, b);
+    return All{a.value and b.value};
 }
 
 bool operator==(const All &a, const All &b) {
@@ -254,20 +228,14 @@ struct MinInt {
     }
     // TODO: replace THE_BIGGEST_INT with INT_MAX_VALUE
     static constexpr const int THE_BIGGEST_INT = 42'000;
-    static MinInt mempty(MinInt a = {}) {
-        return MinInt{THE_BIGGEST_INT};
-    }
-    static MinInt mappend(MinInt a, MinInt b) {
-        return MinInt::min(a, b);
-    }
 };
 
 static MinInt mempty(MinInt a = {}) {
-    return MinInt::mempty();
+    return MinInt{MinInt::THE_BIGGEST_INT};
 }
 
 static MinInt mappend(MinInt a, MinInt b) {
-    return MinInt::mappend(a, b);
+    return MinInt::min(a, b);
 }
 
 bool operator==(const MinInt &a, const MinInt &b) {
@@ -284,20 +252,14 @@ struct MaxInt {
     }
     // TODO: replace THE_LOWEST_INT with INT_MAX_VALUE
     static constexpr const int THE_LOWEST_INT = -42'000;
-    static MaxInt mempty(MaxInt a = {}) {
-        return MaxInt{THE_LOWEST_INT};
-    }
-    static MaxInt mappend(MaxInt a, MaxInt b) {
-        return MaxInt::max(a, b);
-    }
 };
 
 static MaxInt mempty(MaxInt a = {}) {
-    return MaxInt::mempty();
+    return MaxInt{MaxInt::THE_LOWEST_INT};
 }
 
 static MaxInt mappend(MaxInt a, MaxInt b) {
-    return MaxInt::mappend(a, b);
+    return MaxInt::max(a, b);
 }
 
 bool operator==(const MaxInt &a, const MaxInt &b) {
