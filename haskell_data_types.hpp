@@ -294,5 +294,19 @@ bool operator==(const StringMonoid &a, const StringMonoid &b) {
     return a.value == b.value;
 }
 #endif
+
+// maybe function
+// maybe :: b -> (a -> b) -> Maybe a -> b 
+// maybe n _ Nothing  = n
+// maybe _ f (Just x) = f x
+template<typename D, typename T, typename C1> requires Callable1<C1, T>
+auto maybe(D default_val, C1 c, Maybe<T> m) {
+    if (m.has_value) {
+        return c(m.value);
+    } else {
+        return default_val;
+    }
+}
+
 #endif // HASKELL_DATA_TYPES_HPP_
 

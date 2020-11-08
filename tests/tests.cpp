@@ -211,6 +211,16 @@ int main() {
         //helper::this_fun_requires_monoid(mappend(empty, empty));
     }
 #endif
+    {
+        auto foo = Maybe<int>{true, 42};
+        auto bar = maybe(1, [](int a){return a+1;}, foo);
+        EXPECT_EQ(43, bar, "When foo is Just<T>, maybe fun should apply function");
+    }
+    {
+        auto foo = Maybe<int>{};
+        auto bar = maybe(1, [](int a){return a+1;}, foo);
+        EXPECT_EQ(1, bar, "When foo is Nothing, maybe fun should return default value");
+    }
     print_summary();
     return failed;
 }
