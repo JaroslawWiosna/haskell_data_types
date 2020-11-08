@@ -1,4 +1,4 @@
-CXX_FLAGS=-ggdb -std=c++20 -fconcepts-diagnostics-depth=3
+CXX_FLAGS=-ggdb -std=c++2a
 INC?=
 LIB?=
 CXX=c++
@@ -12,6 +12,8 @@ all: hello_world \
 	monoid
 
 hello_world: 01_hello_world.cpp ../haskell_data_types.hpp
+	echo $(CXX)
+	$(CXX) --version
 	$(CXX) $(CXX_FLAGS) $(INC) 01_hello_world.cpp -o hello_world $(LIB)
 
 maybe: 02_maybe.cpp ../haskell_data_types.hpp
