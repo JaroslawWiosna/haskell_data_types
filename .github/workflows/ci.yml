@@ -1,0 +1,37 @@
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build-linux-gcc:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: install dependencies
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
+          sudo apt update
+          sudo apt install tree
+      - uses: actions/cache@v1
+        with:
+          path: |
+            ./gcc/
+          key: gcc10-2
+      - name: build gcc
+        run: |
+          mkdir -p ./gcc
+          wget https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
+          tar xvf gcc-10.2.0.tag.gz
+          cd gcc-10.2.0
+          ./contrib/download_prerequisites
+          make -j5
+          make install
+          cd ..
+      - name: build
+          cd examples
+          export CC=gcc-10
+          export CXX=g++-10
+          CC=gcc-10 CXX=g++-10 make
+        env:
+          CC: gcc-10
+          CXX: g++-10
+         
