@@ -28,7 +28,12 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 //
-
+// Changelog
+//   0.1.0 Maybe
+//         Either
+//         fmap for Maybe
+//         fmap for Either
+//         Monoid: All, Any, MinInt, MaxInt
 
 #ifndef HASKELL_DATA_TYPES_HPP_
 #define HASKELL_DATA_TYPES_HPP_
