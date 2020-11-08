@@ -3,16 +3,30 @@ on: [push, pull_request]
 
 jobs:
   build-linux-gcc:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - name: install dependencies
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
           sudo apt update
-          sudo apt install -qq gcc-10 g++-10
-      - name: build
+          sudo apt install tree
+      - uses: actions/cache@v1
+        with:
+          path: |
+            ./gcc/
+          key: gcc10-2
+      - name: build gcc
         run: |
+          mkdir -p ./gcc
+          wget https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.gz
+          tar xvf gcc-10.2.0.tag.gz
+          cd gcc-10.2.0
+          ./contrib/download_prerequisites
+          make -j5
+          make install
+          cd ..
+      - name: build
           cd examples
           export CC=gcc-10
           export CXX=g++-10
@@ -20,36 +34,4 @@ jobs:
         env:
           CC: gcc-10
           CXX: g++-10
-          
-  build-linux-clang:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v1
-      - name: install dependencies
-        run: |
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/ppa
-          sudo apt-get update
-          sudo apt-get install -qq clang++
-      - name: build
-        run: |
-          cd examples
-          make
-        env:
-          CC: clang
-          CXX: clang++
-          
-  build-macos-clang:
-    runs-on: macOS-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: install dependencies
-        run: |
-          brew install gcc@10
-      - name: build
-        run: |
-          cd examples
-          make
-        env:
-          CC: clang
-          CXX: clang++
-          
+         
