@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - operator[]
    - mempty and mappend
    - liftA2
+   - associative binary operation for Alternative concept
 
 ## [0.3.0] - 2020-11-09
 ### Added

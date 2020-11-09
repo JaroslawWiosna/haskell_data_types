@@ -491,5 +491,11 @@ auto liftA2(C2 fun, List<T1> a, List<T2> b) {
     }
     return result;
 }
+
+template<typename T>
+auto associative_binary_operation_for_alternative(List<T> a1, List<T> a2) {
+    return mappend(a1, a2);
+}
+
 #endif // HASKELL_DATA_TYPES_HPP_
 

@@ -399,6 +399,17 @@ int main() {
 
         EXPECT_EQ(baz, (liftA2(add, foo, bar)), "..");
     }
+    {
+        auto foo = List<float>{};
+        foo.push(1.1f);
+        foo.push(2.2f);
+
+        auto bar = mempty(List<float>{});
+        auto abofa = [](auto a, auto b){return associative_binary_operation_for_alternative(a, b);};
+        EXPECT_EQ(foo, (abofa(foo, bar)), "..");
+        EXPECT_EQ(foo, (abofa(bar, foo)), "..");
+        EXPECT_EQ(bar, (abofa(bar, bar)), "..");
+    }
 
     print_summary();
     return failed;
