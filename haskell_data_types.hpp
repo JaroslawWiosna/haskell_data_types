@@ -115,8 +115,8 @@ concept Callable1 = requires(C c, T t) {
     { c.operator()(t) };
 };
 
-template<typename C, typename T>
-concept Callable2 = requires(C c, T t1, T t2) {
+template<typename C, typename T1, typename T2>
+concept Callable2 = requires(C c, T1 t1, T2 t2) {
     { c.operator()(t1, t2) };
 };
 
@@ -344,6 +344,14 @@ concept Semigroup = requires(S s1, S s2) {
 template<typename M> requires Monoid<M>
 auto associative_binary_operation(M a1, M a2) {
     return mappend(a1, a2);   
+}
+
+// FLIP
+// flip :: (a -> b -> c) -> b -> a -> c
+template
+<typename A, typename B, typename C2> requires Callable2<C2, A, B>
+auto flip(C2 c2, A a, B b) {
+    return c2(b, a);
 }
 
 #endif // HASKELL_DATA_TYPES_HPP_

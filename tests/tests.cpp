@@ -275,6 +275,13 @@ int main() {
 
         EXPECT_EQ(foo, bar, "The associative property of Any");
     }
+    // FLIP
+    {
+        std::string foo{"hello"};
+        std::string bar{"world"};
+        
+        EXPECT_EQ(std::string{"worldhello"}, flip([](std::string a, std::string b){return a+=b;}, foo, bar), "flip flips args");
+    }
     print_summary();
     return failed;
 }
