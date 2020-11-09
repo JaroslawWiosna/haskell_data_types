@@ -354,5 +354,29 @@ auto flip(C2 c2, A a, B b) {
     return c2(b, a);
 }
 
+// FUNCTOR
+// class Functor f where
+//    fmap :: (a -> b) -> f a -> f b
+template<typename F, typename T, typename C1>
+concept Functor = Callable1<C1, T> && requires(F f, C1 fun) {
+    { fmap(fun, f) };
+};
+
+// APPLICATIVE
+// class Functor f => Applicative f where
+//    (<*>) a.k.a. liftA2 :: f (a -> b) -> f a -> f b
+template<typename A, typename T, typename C1, typename T1, typename T2, typename C2>
+concept Applicative = Functor<A, T, C1> && Callable2<C2, T1, T2> && requires(A a1, A a2, C2 c2) {
+    { liftA2(c2, a1, a2) };
+};
+
+template<typename T1, typename T2, typename C2> requires Callable2<C2, T1, T2>
+auto liftA2(C2 fun, Maybe<T1> a, Maybe<T2> b) {
+    auto result = fun(a.value, b.value);
+    return Maybe<decltype(result)>{(a.has_value && b.has_value), result};
+}
+
+
+
 #endif // HASKELL_DATA_TYPES_HPP_
 

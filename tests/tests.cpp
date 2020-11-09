@@ -282,6 +282,20 @@ int main() {
         
         EXPECT_EQ(std::string{"worldhello"}, flip([](std::string a, std::string b){return a+=b;}, foo, bar), "flip flips args");
     }
+    // APPLICATIVE: liftA2
+    {
+        auto foo = Maybe<int>{true, 42};
+        auto bar = Maybe<int>{true, 24};
+        auto bax = Maybe<int>{};
+        auto baz = Maybe<int>{};
+
+        auto add = [](int a, int b){return a+b;};
+
+        EXPECT_EQ((Maybe<int>{true, 66}), liftA2(add, foo, bar), "liftA2");
+        EXPECT_EQ((Maybe<int>{})        , liftA2(add, foo, baz), "liftA2");
+        EXPECT_EQ((Maybe<int>{})        , liftA2(add, bar, baz), "liftA2");
+        EXPECT_EQ((Maybe<int>{})        , liftA2(add, bax, baz), "liftA2");
+    }
     print_summary();
     return failed;
 }
