@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
  - flip function
  - LiftA2 for Applicative
+ - associative binary operation for Alternative concept
 
 ### Changed
  - set default inner type of Maybe to int, so `Maybe{}` is now valid

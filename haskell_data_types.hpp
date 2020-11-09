@@ -376,7 +376,21 @@ auto liftA2(C2 fun, Maybe<T1> a, Maybe<T2> b) {
     return Maybe<decltype(result)>{(a.has_value && b.has_value), result};
 }
 
+// ALTERNATIVE
+// class Applicative f => Alternative f where
+//   empty :: f a
+//   (<|>) :: f a -> f a -> f a -- a.k.a associative binary operation
+//   some :: f a -> f [a]
+//   many :: f a -> f [a]
+template<typename A, typename T, typename C1, typename T1, typename T2, typename C2>
+concept Alternative = Applicative<A, T, C1, T1, T2, C2> && requires(A a1, A a2) {
+    { associative_binary_operation_for_alternative(a1, a2) } -> std::convertible_to<A>;
+};
 
+template<typename T>
+auto associative_binary_operation_for_alternative(Maybe<T> a1, Maybe<T> a2) {
+    return (a1.has_value ? a1 : a2);
+}
 
 #endif // HASKELL_DATA_TYPES_HPP_
 

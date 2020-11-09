@@ -301,6 +301,20 @@ int main() {
         auto foo = [](int a, int b){return a + b + 1;};
         auto bar = Maybe{true, foo};
     }
+    // ALTERNATIVE
+    {
+        auto foo = Maybe{true, 42};
+        auto bar = Maybe{true, 24};
+        auto bax = Maybe{};
+        auto baz = Maybe{};
+
+        auto abofa = [](auto a, auto b){return associative_binary_operation_for_alternative(a, b);};
+        EXPECT_EQ((Maybe{true, 42}), abofa(foo, bar), "Alternative");
+        EXPECT_EQ((Maybe{true, 42}), abofa(foo, bax), "Alternative");
+        EXPECT_EQ((Maybe{})        , abofa(bax, baz), "Alternative");
+        EXPECT_EQ((Maybe{true, 24}), abofa(bax, bar), "Alternative");
+        EXPECT_NEQ((Maybe{})       , abofa(bax, bar), "Alternative");
+    }
     print_summary();
     return failed;
 }
