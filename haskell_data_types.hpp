@@ -438,6 +438,7 @@ struct List {
 template<typename Item, typename C1> requires Callable1<C1, Item>
 auto fmap(C1 fun, List<Item> lst) {
     using Newtype = decltype(std::declval<C1>().operator()(Item{}));
+    // TODO: Wouldn't it be better to zero-init. result?
     List<Newtype> result{lst.capacity, lst.size};
     result.data = (Newtype*)malloc(lst.capacity * sizeof(Newtype));
     for (int i{}; i < result.size; ++i) {
@@ -449,6 +450,17 @@ auto fmap(C1 fun, List<Item> lst) {
 template<typename Item, typename C1> requires Callable1<C1, Item>
 auto map(C1 fun, List<Item> lst) {
     return fmap(fun, lst);
+}
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto filter(C1 fun, List<Item> lst) {
+    List<Item> result{};
+    for (int i{}; i < lst.size; ++i) {
+        if (fun(lst.data[i])) {
+            result.push(lst.data[i]);
+        }
+    }
+    return result;
 }
 
 template<typename T1, typename T2>

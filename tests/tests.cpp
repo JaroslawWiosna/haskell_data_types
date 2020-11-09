@@ -410,6 +410,19 @@ int main() {
         EXPECT_EQ(foo, (abofa(bar, foo)), "..");
         EXPECT_EQ(bar, (abofa(bar, bar)), "..");
     }
+    {
+        auto foo = List<unsigned int>{};
+        for (size_t i{1}; i<10; ++i) {
+            foo.push(i);
+        }
+        auto odd = [](auto i){return (i % 2) == 0;};
+        auto bar = List<unsigned int>{};
+        bar.push(2);
+        bar.push(4);
+        bar.push(6);
+        bar.push(8);
+        EXPECT_EQ(bar, (filter(odd, foo)), "..");
+    }
 
     print_summary();
     return failed;
