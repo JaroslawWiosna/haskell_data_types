@@ -348,6 +348,16 @@ int main() {
         
         EXPECT_EQ(sum_of_mapped, sum * 2, "List's map");
     }
+    {
+        List<std::string> lst{};
+        lst.push("foo");
+        lst.push("foofoo");
+
+        auto bar = map([](std::string s){return s.size();}, lst);
+
+        EXPECT_EQ(3, bar[0], "map with function that return a different type");
+        EXPECT_EQ(6, bar[1], "map with function that return a different type");
+    }
     print_summary();
     return failed;
 }

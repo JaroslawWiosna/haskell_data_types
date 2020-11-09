@@ -47,6 +47,7 @@
 #ifndef HASKELL_DATA_TYPES_HPP_
 #define HASKELL_DATA_TYPES_HPP_
 
+#include <cassert>
 #include <cstring>
 #include <iostream>
 #include <utility>
@@ -409,6 +410,13 @@ struct List {
     size_t size{0};
     Item *data{nullptr};
 
+    List<Item> deep_copy() {
+        List<Item> copy{capacity, size};
+        copy.data = (Item*)malloc(capacity * sizeof(Item));
+        memcpy(copy.data, data, capacity * sizeof(Item));
+        return copy;
+    }
+
     void double_capacity() {
         capacity = (data != nullptr) ? 2 * capacity : 8;
         data = (Item*)realloc((void*)data, capacity * sizeof(Item));
@@ -420,18 +428,27 @@ struct List {
         }
         memcpy(data + size++, &item, sizeof(Item));
     }
+
+    auto operator[](int i) {
+        assert(i < size);
+        return data[i];
+    }
 };
 
 template<typename Item, typename C1> requires Callable1<C1, Item>
-auto map(C1 fun, List<Item> lst) {
-    List<Item> result{lst.capacity, lst.size};
-    result.data = (Item*)malloc(lst.capacity * sizeof(Item));
-    memcpy(result.data, lst.data, sizeof(Item) * lst.capacity);
+auto fmap(C1 fun, List<Item> lst) {
+    using Newtype = decltype(std::declval<C1>().operator()(Item{}));
+    List<Newtype> result{lst.capacity, lst.size};
+    result.data = (Newtype*)malloc(lst.capacity * sizeof(Newtype));
     for (int i{}; i < result.size; ++i) {
         result.data[i] = fun(lst.data[i]);
     }
     return result;
 }
 
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto map(C1 fun, List<Item> lst) {
+    return fmap(fun, lst);
+}
 #endif // HASKELL_DATA_TYPES_HPP_
 
