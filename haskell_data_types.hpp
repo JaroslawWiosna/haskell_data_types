@@ -463,6 +463,14 @@ auto filter(C1 fun, List<Item> lst) {
     return result;
 }
 
+template<typename Item, typename C2> requires Callable2<C2, Item, Item>
+Item foldl(C2 fun, Item init, List<Item> lst) {
+    for (int i{}; i < lst.size; ++i) {
+        init = fun(init, lst.data[i]);
+    }
+    return init;
+}
+
 template<typename T1, typename T2>
 bool operator==(const List<T1> &a, const List<T2> &b) = delete;
 

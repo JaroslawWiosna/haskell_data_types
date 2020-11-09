@@ -423,6 +423,15 @@ int main() {
         bar.push(8);
         EXPECT_EQ(bar, (filter(odd, foo)), "..");
     }
+    {
+        auto foo = List<unsigned int>{};
+        for (size_t i{1}; i<=5; ++i) {
+            foo.push(i);
+        }
+        auto add = [](int a, int b){return (a+b);};
+        auto bar = foldl(add, static_cast<unsigned int>(0), foo);
+        EXPECT_EQ(static_cast<unsigned int>(15), bar, "foldl of List");
+    }
 
     print_summary();
     return failed;
