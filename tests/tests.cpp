@@ -20,7 +20,7 @@ void test(bool b) {
 }
 
 template <typename Expected, typename Actual> 
-void expect_eq(Expected e, Actual a, std::string desc, const char *file, int line) {
+void expect_eq(Expected e, Actual a, const char *desc, const char *file, int line) {
     if (e == a) {
         ++passed;
     } else {
@@ -30,7 +30,7 @@ void expect_eq(Expected e, Actual a, std::string desc, const char *file, int lin
 }
 
 template <typename Expected, typename Actual> 
-void expect_neq(Expected e, Actual a, std::string desc, const char *file, int line) {
+void expect_neq(Expected e, Actual a, const char *desc, const char *file, int line) {
     if (e != a) {
         ++passed;
     } else {
@@ -58,13 +58,13 @@ int main() {
         auto foo = Maybe<int>{};
         auto bar = Maybe<int>{};
 
-        EXPECT_EQ(foo, bar, std::string{"Two different instances of zero initialized maybe should be equal"});
+        EXPECT_EQ(foo, bar, "Two different instances of zero initialized maybe should be equal");
     }
     {
         auto foo = Maybe<int>{};
         auto bar = Maybe<float>{};
 
-        EXPECT_EQ(foo, bar, std::string{"Two different instances of zero initialized maybe should be equal"});
+        EXPECT_EQ(foo, bar, "Two different instances of zero initialized maybe should be equal");
     }
     {
         auto foo = Maybe<int>{true, 42};
