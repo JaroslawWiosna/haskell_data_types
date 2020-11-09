@@ -250,6 +250,31 @@ int main() {
         EXPECT_EQ(bar, 100.f, "function passed as a 2nd arg to either fun should be applied to Right type");
         EXPECT_EQ(1, cnt, "Only one lambda should be called. Only once.");
     }
+    // SEMIGROUP
+    {
+        All a{true};
+        All b{true};
+        All c{false};
+        
+        auto abo = [](auto a, auto b){return associative_binary_operation(a, b);};
+
+        auto foo = abo(abo(a, b), c);
+        auto bar = abo(a, abo(b, c));
+
+        EXPECT_EQ(foo, bar, "The associative property of All");
+    }
+    {
+        Any a{true};
+        Any b{true};
+        Any c{false};
+        
+        auto abo = [](auto a, auto b){return associative_binary_operation(a, b);};
+
+        auto foo = abo(abo(a, b), c);
+        auto bar = abo(a, abo(b, c));
+
+        EXPECT_EQ(foo, bar, "The associative property of Any");
+    }
     print_summary();
     return failed;
 }

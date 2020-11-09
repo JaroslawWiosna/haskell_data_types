@@ -331,5 +331,17 @@ auto either(CL cl, CR cr, Either<L, R> e) {
     }
 }
 
+// SEMIGROUP
+
+template<typename S>
+concept Semigroup = requires(S s1, S s2) {
+    { associative_binary_operation(s1, s2) } -> std::convertible_to<S>;
+};
+
+template<typename M> requires Monoid<M>
+auto associative_binary_operation(M a1, M a2) {
+    return mappend(a1, a2);   
+}
+
 #endif // HASKELL_DATA_TYPES_HPP_
 
