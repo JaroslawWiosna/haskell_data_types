@@ -105,8 +105,8 @@ bool operator==(Either<Left1, Right1> &a, Either<Left2, Right2> &b) {
 
 // EQ
 
-template<typename T>
-concept Eq = requires(T a, T b) {
+template<typename T1, typename T2>
+concept Eq = requires(T1 a, T2 b) {
     { operator==(a,b) };
 };
 
@@ -450,5 +450,24 @@ template<typename Item, typename C1> requires Callable1<C1, Item>
 auto map(C1 fun, List<Item> lst) {
     return fmap(fun, lst);
 }
+
+template<typename T1, typename T2>
+bool operator==(const List<T1> &a, const List<T2> &b) = delete;
+
+template<typename T1, typename T2> requires Eq<T1, T2> || std::is_same<T1, T2>::value
+bool operator==(const List<T1> &a, const List<T2> &b) {
+    if (a.size != b.size) {
+        return false;
+    }
+    for (size_t i; i < a.size; ++i) {
+        if (a.data[i] != b.data[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
 #endif // HASKELL_DATA_TYPES_HPP_
 

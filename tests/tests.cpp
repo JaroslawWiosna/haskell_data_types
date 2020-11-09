@@ -357,6 +357,18 @@ int main() {
 
         EXPECT_EQ(3, bar[0], "map with function that return a different type");
         EXPECT_EQ(6, bar[1], "map with function that return a different type");
+        // EXPECT_NEQ(lst, bar, "List of different types should be considered equal only if both lists have the same size and operator== on every single element returns true");
+
+        auto baz = List<float>{};
+        baz.push(3.0f);
+        baz.push(6);
+        // EXPECT_EQ(bar, baz, "List of different types should be considered equal only if both lists have the same size and operator== on every single element returns true");
+
+        auto bax = List<long unsigned int>{};
+        bax.push(3);
+        bax.push(6);
+        EXPECT_EQ(bar, bax, "List of the same type should be considered equal only if both lists have the same size and operator== on every single element returns true");
+
     }
     print_summary();
     return failed;
