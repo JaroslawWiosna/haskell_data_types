@@ -292,9 +292,9 @@ int main() {
         auto add = [](int a, int b){return a+b;};
 
         EXPECT_EQ((Maybe<int>{true, 66}), liftA2(add, foo, bar), "liftA2");
-        EXPECT_EQ((Maybe<int>{})        , liftA2(add, foo, baz), "liftA2");
-        EXPECT_EQ((Maybe<int>{})        , liftA2(add, bar, baz), "liftA2");
-        EXPECT_EQ((Maybe<int>{})        , liftA2(add, bax, baz), "liftA2");
+        EXPECT_EQ((Maybe{})             , liftA2(add, foo, baz), "liftA2");
+        EXPECT_EQ((Maybe{})             , liftA2(add, bar, baz), "liftA2");
+        EXPECT_EQ((Maybe{})             , liftA2(add, bax, baz), "liftA2");
     }
     // MAYBE WITH LAMBDA INSIDE AS A PARAMETER
     {

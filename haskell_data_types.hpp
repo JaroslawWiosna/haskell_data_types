@@ -51,7 +51,7 @@ void hello_world() {
 
 // MAYBE
 
-template<typename T>
+template<typename T = int>
 struct Maybe {
     bool has_value{};
     T value{};
