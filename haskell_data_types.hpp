@@ -29,6 +29,11 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 // Changelog
+//   0.3.0 flip function
+//         liftA2 for Applicative
+//         associative binary operation for Alternative
+//         set default inner type of Maybe to int, so `Maybe{}` is now valid
+//           until now one had to `auto foo = Maybe<int>{};`
 //   0.2.0 maybe function
 //         either function
 //         value_or method for Maybe
