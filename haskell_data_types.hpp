@@ -29,6 +29,9 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 // Changelog
+//   0.2.0 maybe function
+//         either function
+//         value_or method for Maybe
 //   0.1.1 Use only regular `mappend` and `mempty` instead of static functions
 //   0.1.0 Maybe
 //         Either
