@@ -380,6 +380,26 @@ int main() {
         EXPECT_EQ(foo, (mappend(bar, foo)), "..");
         EXPECT_EQ(bar, (mappend(bar, bar)), "..");
     }
+    {
+        auto foo = List<float>{};
+        foo.push(1.1f);
+        foo.push(2.2f);
+
+        auto bar = List<float>{};
+        bar.push(100.0f);
+        bar.push(200.0f);
+        
+        auto baz = List<unsigned int>{};
+        baz.push(101);
+        baz.push(201);
+        baz.push(102);
+        baz.push(202);
+
+        auto add = [](float a, float b){return static_cast<unsigned int>(a+b);};
+
+        EXPECT_EQ(baz, (liftA2(add, foo, bar)), "..");
+    }
+
     print_summary();
     return failed;
 }

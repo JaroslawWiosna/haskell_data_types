@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - fmap (map)
    - operator[]
    - mempty and mappend
+   - liftA2
 
 ## [0.3.0] - 2020-11-09
 ### Added

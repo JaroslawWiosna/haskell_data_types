@@ -480,7 +480,16 @@ static List<T> mappend(List<T> a, List<T> b) {
     return a;
 }
 
-
-
+template<typename T1, typename T2, typename C2> requires Callable2<C2, T1, T2>
+auto liftA2(C2 fun, List<T1> a, List<T2> b) {
+    using Newtype = decltype(std::declval<C2>().operator()(T1{}, T2{}));
+    List<Newtype> result{};
+    for (int i{}; i < a.size; ++i) {
+        for (int j{}; j < b.size; ++j) {
+            result.push(fun(a.data[i], b.data[j]));
+        }
+    }
+    return result;
+}
 #endif // HASKELL_DATA_TYPES_HPP_
 
