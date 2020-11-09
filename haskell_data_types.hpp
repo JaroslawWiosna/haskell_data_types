@@ -422,5 +422,16 @@ struct List {
     }
 };
 
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto map(C1 fun, List<Item> lst) {
+    List<Item> result{lst.capacity, lst.size};
+    result.data = (Item*)malloc(lst.capacity * sizeof(Item));
+    memcpy(result.data, lst.data, sizeof(Item) * lst.capacity);
+    for (int i{}; i < result.size; ++i) {
+        result.data[i] = fun(lst.data[i]);
+    }
+    return result;
+}
+
 #endif // HASKELL_DATA_TYPES_HPP_
 

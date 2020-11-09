@@ -329,7 +329,24 @@ int main() {
             lst.push(i);
         }
         EXPECT_EQ(100, lst.size, "List size should be 100, because 100 Items were added");
-
+    }
+    {
+        constexpr int SIZE = 5;
+        List<int> lst{};
+        int sum{};
+        for (int i{}; i < SIZE; ++i) {
+            lst.push(i);
+            sum += i;
+        }
+        
+        auto foo = [](int a){return a * 2;};
+        auto mapped_lst = map(foo, lst);
+        int sum_of_mapped{};
+        for (int i{}; i < SIZE; ++i) {
+            sum_of_mapped += mapped_lst.data[i];
+        }
+        
+        EXPECT_EQ(sum_of_mapped, sum * 2, "List's map");
     }
     print_summary();
     return failed;
