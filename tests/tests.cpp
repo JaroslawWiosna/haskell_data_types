@@ -296,6 +296,11 @@ int main() {
         EXPECT_EQ((Maybe<int>{})        , liftA2(add, bar, baz), "liftA2");
         EXPECT_EQ((Maybe<int>{})        , liftA2(add, bax, baz), "liftA2");
     }
+    // MAYBE WITH LAMBDA INSIDE AS A PARAMETER
+    {
+        auto foo = [](int a, int b){return a + b + 1;};
+        auto bar = Maybe{true, foo};
+    }
     print_summary();
     return failed;
 }
