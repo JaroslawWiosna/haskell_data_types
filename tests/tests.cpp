@@ -250,6 +250,13 @@ int main() {
         EXPECT_EQ(bar, 100.f, "function passed as a 2nd arg to either fun should be applied to Right type");
         EXPECT_EQ(1, cnt, "Only one lambda should be called. Only once.");
     }
+    {
+        int cnt{};
+        auto foo = Either<int, unsigned int>{false, 100, {}};
+        auto bar = either([&](int i){++cnt; return static_cast<float>(i/2);}, [&](unsigned int i){++cnt; return static_cast<float>(i);}, foo);
+        EXPECT_EQ(bar, 50.f, "function passed as a 2nd arg to either fun should be applied to Right type");
+        EXPECT_EQ(1, cnt, "Only one lambda should be called. Only once.");
+    }
     // SEMIGROUP
     {
         All a{true};
@@ -314,6 +321,15 @@ int main() {
         EXPECT_EQ((Maybe{})        , abofa(bax, baz), "Alternative");
         EXPECT_EQ((Maybe{true, 24}), abofa(bax, bar), "Alternative");
         EXPECT_NEQ((Maybe{})       , abofa(bax, bar), "Alternative");
+    }
+    // LIST
+    {
+        List<int> lst{};
+        for (int i{}; i < 100; ++i) {
+            lst.push(i);
+        }
+        EXPECT_EQ(100, lst.size, "List size should be 100, because 100 Items were added");
+
     }
     print_summary();
     return failed;

@@ -47,6 +47,7 @@
 #ifndef HASKELL_DATA_TYPES_HPP_
 #define HASKELL_DATA_TYPES_HPP_
 
+#include <cstring>
 #include <iostream>
 #include <utility>
 
@@ -396,6 +397,30 @@ template<typename T>
 auto associative_binary_operation_for_alternative(Maybe<T> a1, Maybe<T> a2) {
     return (a1.has_value ? a1 : a2);
 }
+
+// LIST
+// It is going to be std::vector-like container (for now at least).
+// We are going to support as many List interfaces from Haskell as possible
+// (as long as C++ allows)
+
+template<typename Item>
+struct List {
+    size_t capacity{0};
+    size_t size{0};
+    Item *data{nullptr};
+
+    void double_capacity() {
+        capacity = (data != nullptr) ? 2 * capacity : 8;
+        data = (Item*)realloc((void*)data, capacity * sizeof(Item));
+    }
+
+    void push(Item item) {
+        if (size + 1 > capacity) {
+            double_capacity();
+        }
+        memcpy(data + size++, &item, sizeof(Item));
+    }
+};
 
 #endif // HASKELL_DATA_TYPES_HPP_
 
