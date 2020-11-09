@@ -40,10 +40,10 @@ void expect_neq(Expected e, Actual a, const char *desc, const char *file, int li
 }
 
 #define EXPECT_EQ(val1, val2, val3) \
-    expect_eq(val1, val2, val3, __FILE__, __LINE__);
+    expect_eq((val1), (val2), (val3), __FILE__, __LINE__);
 
 #define EXPECT_NEQ(val1, val2, val3) \
-    expect_neq(val1, val2, val3, __FILE__, __LINE__);
+    expect_neq((val1), (val2), (val3), __FILE__, __LINE__);
 
 namespace helper {
 template<typename T>
@@ -369,6 +369,16 @@ int main() {
         bax.push(6);
         EXPECT_EQ(bar, bax, "List of the same type should be considered equal only if both lists have the same size and operator== on every single element returns true");
 
+    }
+    {
+        auto foo = List<float>{};
+        foo.push(1.1f);
+        foo.push(2.2f);
+
+        auto bar = mempty(List<float>{});
+        EXPECT_EQ(foo, (mappend(foo, bar)), "..");
+        EXPECT_EQ(foo, (mappend(bar, foo)), "..");
+        EXPECT_EQ(bar, (mappend(bar, bar)), "..");
     }
     print_summary();
     return failed;

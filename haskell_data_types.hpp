@@ -404,7 +404,7 @@ auto associative_binary_operation_for_alternative(Maybe<T> a1, Maybe<T> a2) {
 // We are going to support as many List interfaces from Haskell as possible
 // (as long as C++ allows)
 
-template<typename Item>
+template<typename Item = int>
 struct List {
     size_t capacity{0};
     size_t size{0};
@@ -465,6 +465,19 @@ bool operator==(const List<T1> &a, const List<T2> &b) {
         }
     }
     return true;
+}
+
+template<typename T = int>
+static List<T> mempty(List<T> l = {}) {
+    return List<T>{};
+}
+
+template<typename T>
+static List<T> mappend(List<T> a, List<T> b) {
+    for (size_t i{}; i < b.size; ++i) {
+        a.push(b.data[i]);
+    }
+    return a;
 }
 
 
