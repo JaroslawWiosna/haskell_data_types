@@ -29,6 +29,11 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 // Changelog
+//   0.5.0 List's head
+//         List's last
+//         List's tail
+//         List's init
+//         Wrap everything into `namespace haskell_data_types`
 //   0.4.0 List
 //         see CHANGELOG.md for details
 //   0.3.0 flip function
