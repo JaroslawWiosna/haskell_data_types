@@ -109,7 +109,7 @@ bool operator==(Either<Left1, Right1> &a, Either<Left2, Right2> &b) {
 
 // EQ
 
-template<typename T1, typename T2>
+template<typename T1, typename T2 = T1>
 concept Eq = requires(T1 a, T2 b) {
     { operator==(a,b) };
 };
