@@ -441,6 +441,8 @@ int main() {
         }
         EXPECT_EQ(static_cast<unsigned int>(1), head(foo), "head of List");
         EXPECT_EQ(static_cast<unsigned int>(5), last(foo), "last of List");
+        EXPECT_EQ(static_cast<unsigned int>(2), head(tail(foo)), "head of List");
+        EXPECT_EQ(static_cast<unsigned int>(4), last(init(foo)), "last of List");
     }
 
     print_summary();

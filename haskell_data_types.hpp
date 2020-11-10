@@ -530,7 +530,24 @@ T head(List<T> lst) {
 template <typename T>
 T last(List<T> lst) {
     assert(lst.size >= 1);
-    return lst.data[size - 1];
+    return lst.data[lst.size - 1];
+}
+
+template<typename T>
+List<T> tail(List<T> lst) {
+   assert(lst.size >= 1);
+   List<T> copy{lst.capacity, lst.size - 1};
+   copy.data = (T*)malloc(lst.capacity * sizeof(T));
+   memcpy(copy.data, lst.data + 1, lst.capacity * sizeof(T));
+   return copy; 
+}
+
+template<typename T>
+List<T> init(List<T> lst) {
+   assert(lst.size >= 1);
+   auto result = lst.deep_copy();
+   result.size--;
+   return result;
 }
 
 } // namespace haskell_data_types
