@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace haskell_data_types;
+
 template<typename T>
 bool f(T a, T b, T c) requires Eq<T> {
     return {};

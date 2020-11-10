@@ -54,6 +54,8 @@
 #include <iostream>
 #include <utility>
 
+namespace haskell_data_types {
+
 void hello_world() {
     std::cout << "Hello! " << '\n';
 }
@@ -519,5 +521,6 @@ auto associative_binary_operation_for_alternative(List<T> a1, List<T> a2) {
     return mappend(a1, a2);
 }
 
+} // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
 

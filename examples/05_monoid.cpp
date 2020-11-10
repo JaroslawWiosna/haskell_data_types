@@ -3,6 +3,8 @@
 #include <cassert>
 #include <iostream>
 
+using namespace haskell_data_types;
+
 template<typename T>
 bool f(T a) requires Monoid<T> {
     return {};

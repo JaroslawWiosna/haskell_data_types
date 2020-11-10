@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+using namespace haskell_data_types;
+
 int main() {
     {
         auto foo = Either<int, double>{true, {}, 42.0};

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 
+using namespace haskell_data_types;
+
 size_t passed{};
 size_t failed{};
 
