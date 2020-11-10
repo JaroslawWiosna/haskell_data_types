@@ -521,6 +521,18 @@ auto associative_binary_operation_for_alternative(List<T> a1, List<T> a2) {
     return mappend(a1, a2);
 }
 
+template <typename T>
+T head(List<T> lst) {
+    assert(lst.size >= 1);
+    return lst.data[0];
+}
+
+template <typename T>
+T last(List<T> lst) {
+    assert(lst.size >= 1);
+    return lst.data[size - 1];
+}
+
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
 

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
  - Wrap everything into `namespace haskell_data_types`
+ - List
+   - head
+   - last
 
 ## [0.4.0] - 2020-11-10
 ### Added
