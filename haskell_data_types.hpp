@@ -29,6 +29,8 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 // Changelog
+//   0.4.0 List
+//         see CHANGELOG.md for details
 //   0.3.0 flip function
 //         liftA2 for Applicative
 //         associative binary operation for Alternative
