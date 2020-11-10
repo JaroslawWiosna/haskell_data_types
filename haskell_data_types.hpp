@@ -47,6 +47,8 @@
 #ifndef HASKELL_DATA_TYPES_HPP_
 #define HASKELL_DATA_TYPES_HPP_
 
+#include <cassert>
+#include <cstring>
 #include <iostream>
 #include <utility>
 
@@ -103,8 +105,8 @@ bool operator==(Either<Left1, Right1> &a, Either<Left2, Right2> &b) {
 
 // EQ
 
-template<typename T>
-concept Eq = requires(T a, T b) {
+template<typename T1, typename T2>
+concept Eq = requires(T1 a, T2 b) {
     { operator==(a,b) };
 };
 
@@ -395,6 +397,124 @@ concept Alternative = Applicative<A, T, C1, T1, T2, C2> && requires(A a1, A a2) 
 template<typename T>
 auto associative_binary_operation_for_alternative(Maybe<T> a1, Maybe<T> a2) {
     return (a1.has_value ? a1 : a2);
+}
+
+// LIST
+// It is going to be std::vector-like container (for now at least).
+// We are going to support as many List interfaces from Haskell as possible
+// (as long as C++ allows)
+
+template<typename Item = int>
+struct List {
+    size_t capacity{0};
+    size_t size{0};
+    Item *data{nullptr};
+
+    List<Item> deep_copy() {
+        List<Item> copy{capacity, size};
+        copy.data = (Item*)malloc(capacity * sizeof(Item));
+        memcpy(copy.data, data, capacity * sizeof(Item));
+        return copy;
+    }
+
+    void double_capacity() {
+        capacity = (data != nullptr) ? 2 * capacity : 8;
+        data = (Item*)realloc((void*)data, capacity * sizeof(Item));
+    }
+
+    void push(Item item) {
+        if (size + 1 > capacity) {
+            double_capacity();
+        }
+        memcpy(data + size++, &item, sizeof(Item));
+    }
+
+    auto operator[](int i) {
+        assert(i < size);
+        return data[i];
+    }
+};
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto fmap(C1 fun, List<Item> lst) {
+    using Newtype = decltype(std::declval<C1>().operator()(Item{}));
+    // TODO: Wouldn't it be better to zero-init. result?
+    List<Newtype> result{lst.capacity, lst.size};
+    result.data = (Newtype*)malloc(lst.capacity * sizeof(Newtype));
+    for (int i{}; i < result.size; ++i) {
+        result.data[i] = fun(lst.data[i]);
+    }
+    return result;
+}
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto map(C1 fun, List<Item> lst) {
+    return fmap(fun, lst);
+}
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto filter(C1 fun, List<Item> lst) {
+    List<Item> result{};
+    for (int i{}; i < lst.size; ++i) {
+        if (fun(lst.data[i])) {
+            result.push(lst.data[i]);
+        }
+    }
+    return result;
+}
+
+template<typename Item, typename C2> requires Callable2<C2, Item, Item>
+Item foldl(C2 fun, Item init, List<Item> lst) {
+    for (int i{}; i < lst.size; ++i) {
+        init = fun(init, lst.data[i]);
+    }
+    return init;
+}
+
+template<typename T1, typename T2>
+bool operator==(const List<T1> &a, const List<T2> &b) = delete;
+
+template<typename T1, typename T2> requires Eq<T1, T2> || std::is_same<T1, T2>::value
+bool operator==(const List<T1> &a, const List<T2> &b) {
+    if (a.size != b.size) {
+        return false;
+    }
+    for (size_t i; i < a.size; ++i) {
+        if (a.data[i] != b.data[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template<typename T = int>
+static List<T> mempty(List<T> l = {}) {
+    return List<T>{};
+}
+
+template<typename T>
+static List<T> mappend(List<T> a, List<T> b) {
+    for (size_t i{}; i < b.size; ++i) {
+        a.push(b.data[i]);
+    }
+    return a;
+}
+
+template<typename T1, typename T2, typename C2> requires Callable2<C2, T1, T2>
+auto liftA2(C2 fun, List<T1> a, List<T2> b) {
+    using Newtype = decltype(std::declval<C2>().operator()(T1{}, T2{}));
+    List<Newtype> result{};
+    for (int i{}; i < a.size; ++i) {
+        for (int j{}; j < b.size; ++j) {
+            result.push(fun(a.data[i], b.data[j]));
+        }
+    }
+    return result;
+}
+
+template<typename T>
+auto associative_binary_operation_for_alternative(List<T> a1, List<T> a2) {
+    return mappend(a1, a2);
 }
 
 #endif // HASKELL_DATA_TYPES_HPP_

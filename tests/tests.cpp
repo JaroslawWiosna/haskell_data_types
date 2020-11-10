@@ -40,10 +40,10 @@ void expect_neq(Expected e, Actual a, const char *desc, const char *file, int li
 }
 
 #define EXPECT_EQ(val1, val2, val3) \
-    expect_eq(val1, val2, val3, __FILE__, __LINE__);
+    expect_eq((val1), (val2), (val3), __FILE__, __LINE__);
 
 #define EXPECT_NEQ(val1, val2, val3) \
-    expect_neq(val1, val2, val3, __FILE__, __LINE__);
+    expect_neq((val1), (val2), (val3), __FILE__, __LINE__);
 
 namespace helper {
 template<typename T>
@@ -250,6 +250,13 @@ int main() {
         EXPECT_EQ(bar, 100.f, "function passed as a 2nd arg to either fun should be applied to Right type");
         EXPECT_EQ(1, cnt, "Only one lambda should be called. Only once.");
     }
+    {
+        int cnt{};
+        auto foo = Either<int, unsigned int>{false, 100, {}};
+        auto bar = either([&](int i){++cnt; return static_cast<float>(i/2);}, [&](unsigned int i){++cnt; return static_cast<float>(i);}, foo);
+        EXPECT_EQ(bar, 50.f, "function passed as a 2nd arg to either fun should be applied to Right type");
+        EXPECT_EQ(1, cnt, "Only one lambda should be called. Only once.");
+    }
     // SEMIGROUP
     {
         All a{true};
@@ -315,6 +322,117 @@ int main() {
         EXPECT_EQ((Maybe{true, 24}), abofa(bax, bar), "Alternative");
         EXPECT_NEQ((Maybe{})       , abofa(bax, bar), "Alternative");
     }
+    // LIST
+    {
+        List<int> lst{};
+        for (int i{}; i < 100; ++i) {
+            lst.push(i);
+        }
+        EXPECT_EQ(100, lst.size, "List size should be 100, because 100 Items were added");
+    }
+    {
+        constexpr int SIZE = 5;
+        List<int> lst{};
+        int sum{};
+        for (int i{}; i < SIZE; ++i) {
+            lst.push(i);
+            sum += i;
+        }
+        
+        auto foo = [](int a){return a * 2;};
+        auto mapped_lst = map(foo, lst);
+        int sum_of_mapped{};
+        for (int i{}; i < SIZE; ++i) {
+            sum_of_mapped += mapped_lst.data[i];
+        }
+        
+        EXPECT_EQ(sum_of_mapped, sum * 2, "List's map");
+    }
+    {
+        List<std::string> lst{};
+        lst.push("foo");
+        lst.push("foofoo");
+
+        auto bar = map([](std::string s){return s.size();}, lst);
+
+        EXPECT_EQ(3, bar[0], "map with function that return a different type");
+        EXPECT_EQ(6, bar[1], "map with function that return a different type");
+        // EXPECT_NEQ(lst, bar, "List of different types should be considered equal only if both lists have the same size and operator== on every single element returns true");
+
+        auto baz = List<float>{};
+        baz.push(3.0f);
+        baz.push(6);
+        // EXPECT_EQ(bar, baz, "List of different types should be considered equal only if both lists have the same size and operator== on every single element returns true");
+
+        auto bax = List<long unsigned int>{};
+        bax.push(3);
+        bax.push(6);
+        EXPECT_EQ(bar, bax, "List of the same type should be considered equal only if both lists have the same size and operator== on every single element returns true");
+
+    }
+    {
+        auto foo = List<float>{};
+        foo.push(1.1f);
+        foo.push(2.2f);
+
+        auto bar = mempty(List<float>{});
+        EXPECT_EQ(foo, (mappend(foo, bar)), "..");
+        EXPECT_EQ(foo, (mappend(bar, foo)), "..");
+        EXPECT_EQ(bar, (mappend(bar, bar)), "..");
+    }
+    {
+        auto foo = List<float>{};
+        foo.push(1.1f);
+        foo.push(2.2f);
+
+        auto bar = List<float>{};
+        bar.push(100.0f);
+        bar.push(200.0f);
+        
+        auto baz = List<unsigned int>{};
+        baz.push(101);
+        baz.push(201);
+        baz.push(102);
+        baz.push(202);
+
+        auto add = [](float a, float b){return static_cast<unsigned int>(a+b);};
+
+        EXPECT_EQ(baz, (liftA2(add, foo, bar)), "..");
+    }
+    {
+        auto foo = List<float>{};
+        foo.push(1.1f);
+        foo.push(2.2f);
+
+        auto bar = mempty(List<float>{});
+        auto abofa = [](auto a, auto b){return associative_binary_operation_for_alternative(a, b);};
+        EXPECT_EQ(foo, (abofa(foo, bar)), "..");
+        EXPECT_EQ(foo, (abofa(bar, foo)), "..");
+        EXPECT_EQ(bar, (abofa(bar, bar)), "..");
+    }
+    {
+        auto foo = List<unsigned int>{};
+        for (size_t i{1}; i<10; ++i) {
+            foo.push(i);
+        }
+        auto odd = [](auto i){return (i % 2) == 0;};
+        auto bar = List<unsigned int>{};
+        bar.push(2);
+        bar.push(4);
+        bar.push(6);
+        bar.push(8);
+        EXPECT_EQ(bar, (filter(odd, foo)), "..");
+    }
+    {
+        auto foo = List<unsigned int>{};
+        for (size_t i{1}; i<=5; ++i) {
+            foo.push(i);
+        }
+        auto add = [](int a, int b){return (a+b);};
+        auto bar = foldl(add, static_cast<unsigned int>(0), foo);
+        EXPECT_EQ(static_cast<unsigned int>(15), bar, "foldl of List");
+    }
+
     print_summary();
     return failed;
 }
