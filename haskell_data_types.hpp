@@ -58,6 +58,7 @@
 #include <cstring>
 #include <iostream>
 #include <utility>
+#include <vector>
 
 namespace haskell_data_types {
 
@@ -554,6 +555,19 @@ List<T> init(List<T> lst) {
    result.size--;
    return result;
 }
+
+// Haskell's List interfaces for std::vector
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto fmap(C1 fun, std::vector<Item> lst) {
+    using Newtype = decltype(std::declval<C1>().operator()(Item{}));
+    std::vector<Newtype> result{};
+    for (const auto &lst_item : lst) {
+        result.push_back(fun(lst_item));
+    }
+    return result;
+}
+
 
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_

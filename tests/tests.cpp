@@ -452,6 +452,14 @@ int main() {
         EXPECT_EQ(static_cast<unsigned int>(2), head(tail(foo)), "head of List");
         EXPECT_EQ(static_cast<unsigned int>(4), last(init(foo)), "last of List");
     }
+    // std::vector but with haskell's list interfaces
+    {
+        std::vector foo{1,2,5,7};
+        auto add_one = [](int a){return (a+1);};
+        auto bar = fmap(add_one, foo);
+        auto expected = std::vector{2,3,6,8};
+        EXPECT_EQ(expected, bar, "fpam for std::vector");
+    }
 
     print_summary();
     return failed;
