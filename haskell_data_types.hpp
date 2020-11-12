@@ -617,6 +617,10 @@ auto liftA2(C2 fun, std::vector<T1> a, std::vector<T2> b) {
     return result;
 }
 
+template<typename T>
+auto associative_binary_operation_for_alternative(std::vector<T> a1, std::vector<T> a2) {
+    return mappend(a1, a2);
+}
 
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
