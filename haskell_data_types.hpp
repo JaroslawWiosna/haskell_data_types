@@ -29,6 +29,14 @@
 //////////////////////////////////////////////////////////////////////////////
 //
 // Changelog
+//   0.6.0 Haskell List interfaces for std::vector
+//           - fmap
+//           - map
+//           - filter
+//           - foldl
+//           - mempty and mappend
+//           - liftA2
+//           - abofa
 //   0.5.0 List's head
 //         List's last
 //         List's tail
