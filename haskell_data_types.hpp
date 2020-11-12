@@ -573,6 +573,18 @@ auto map(C1 fun, std::vector<Item> lst) {
     return fmap(fun, lst);
 }
 
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto filter(C1 fun, std::vector<Item> lst) {
+    std::vector<Item> result{};
+    for (const auto &lst_item : lst) {
+        if (fun(lst_item)) {
+            result.push_back(lst_item);
+        }
+    }
+    return result;
+}
+
+
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
 

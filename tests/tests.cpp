@@ -458,7 +458,16 @@ int main() {
         auto add_one = [](int a){return (a+1);};
         auto bar = fmap(add_one, foo);
         auto expected = std::vector{2,3,6,8};
-        EXPECT_EQ(expected, bar, "fpam for std::vector");
+        EXPECT_EQ(expected, bar, "fmap for std::vector");
+    }
+    {
+        std::vector<int> foo{};
+        for (int i{1}; i <= 100; ++i) {
+            foo.push_back(i);
+        }
+        auto odd = [](int a){return (a%2 == 0);};
+        auto bar = filter(odd, foo);
+        EXPECT_EQ(foo.size()/2, bar.size(), "filter for std::vector");
     }
 
     print_summary();
