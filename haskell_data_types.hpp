@@ -568,6 +568,10 @@ auto fmap(C1 fun, std::vector<Item> lst) {
     return result;
 }
 
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto map(C1 fun, std::vector<Item> lst) {
+    return fmap(fun, lst);
+}
 
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
