@@ -108,7 +108,8 @@ int main() {
     }
     {
         auto foo = Maybe<int>{};
-        auto bar = fmap([](int a){return 1+a;}, foo);
+        auto add_one = [](int a){return 1+a;};
+        auto bar = fmap(add_one, foo);
 
         EXPECT_EQ(foo, bar, "fmap on Nothing a.k.a. Maybe<T>{} should return input");
     }
@@ -304,6 +305,13 @@ int main() {
         EXPECT_EQ((Maybe{})             , liftA2(add, foo, baz), "liftA2");
         EXPECT_EQ((Maybe{})             , liftA2(add, bar, baz), "liftA2");
         EXPECT_EQ((Maybe{})             , liftA2(add, bax, baz), "liftA2");
+
+        auto multiply = [](int a, int b){return a*b;};
+
+        EXPECT_EQ((Maybe<int>{true, 1008}), liftA2(multiply, foo, bar), "liftA2");
+        EXPECT_EQ((Maybe{}), liftA2(multiply, foo, baz), "liftA2");
+        EXPECT_EQ((Maybe{}), liftA2(multiply, bar, baz), "liftA2");
+        EXPECT_EQ((Maybe{}), liftA2(multiply, bax, baz), "liftA2");
     }
     // MAYBE WITH LAMBDA INSIDE AS A PARAMETER
     {
