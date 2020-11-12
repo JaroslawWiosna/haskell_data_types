@@ -592,6 +592,18 @@ Item foldl(C2 fun, Item init, std::vector<Item> lst) {
     return init;
 }
 
+template<typename T = int>
+static std::vector<T> mempty(std::vector<T> l = {}) {
+    return std::vector<T>{};
+}
+
+template<typename T>
+static std::vector<T> mappend(std::vector<T> a, std::vector<T> b) {
+    for (const auto &b_item : b) {
+        a.push_back(b_item);
+    }
+    return a;
+}
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
 
