@@ -58,6 +58,7 @@
 #include <cstring>
 #include <iostream>
 #include <utility>
+#include <vector>
 
 namespace haskell_data_types {
 
@@ -553,6 +554,72 @@ List<T> init(List<T> lst) {
    auto result = lst.deep_copy();
    result.size--;
    return result;
+}
+
+// Haskell's List interfaces for std::vector
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto fmap(C1 fun, std::vector<Item> lst) {
+    using Newtype = decltype(std::declval<C1>().operator()(Item{}));
+    std::vector<Newtype> result{};
+    for (const auto &lst_item : lst) {
+        result.push_back(fun(lst_item));
+    }
+    return result;
+}
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto map(C1 fun, std::vector<Item> lst) {
+    return fmap(fun, lst);
+}
+
+template<typename Item, typename C1> requires Callable1<C1, Item>
+auto filter(C1 fun, std::vector<Item> lst) {
+    std::vector<Item> result{};
+    for (const auto &lst_item : lst) {
+        if (fun(lst_item)) {
+            result.push_back(lst_item);
+        }
+    }
+    return result;
+}
+
+template<typename Item, typename C2> requires Callable2<C2, Item, Item>
+Item foldl(C2 fun, Item init, std::vector<Item> lst) {
+    for (const auto &lst_item : lst) {
+        init = fun(init, lst_item);
+    }
+    return init;
+}
+
+template<typename T = int>
+static std::vector<T> mempty(std::vector<T> l = {}) {
+    return std::vector<T>{};
+}
+
+template<typename T>
+static std::vector<T> mappend(std::vector<T> a, std::vector<T> b) {
+    for (const auto &b_item : b) {
+        a.push_back(b_item);
+    }
+    return a;
+}
+
+template<typename T1, typename T2, typename C2> requires Callable2<C2, T1, T2>
+auto liftA2(C2 fun, std::vector<T1> a, std::vector<T2> b) {
+    using Newtype = decltype(std::declval<C2>().operator()(T1{}, T2{}));
+    std::vector<Newtype> result{};
+    for (const auto &a_item : a) {
+        for (const auto &b_item : b) {
+            result.push(fun(a_item, a_item));
+        }
+    }
+    return result;
+}
+
+template<typename T>
+auto associative_binary_operation_for_alternative(std::vector<T> a1, std::vector<T> a2) {
+    return mappend(a1, a2);
 }
 
 } // namespace haskell_data_types

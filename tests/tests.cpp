@@ -452,6 +452,32 @@ int main() {
         EXPECT_EQ(static_cast<unsigned int>(2), head(tail(foo)), "head of List");
         EXPECT_EQ(static_cast<unsigned int>(4), last(init(foo)), "last of List");
     }
+    // std::vector but with haskell's list interfaces
+    {
+        std::vector foo{1,2,5,7};
+        auto add_one = [](int a){return (a+1);};
+        auto bar = fmap(add_one, foo);
+        auto expected = std::vector{2,3,6,8};
+        EXPECT_EQ(expected, bar, "fmap for std::vector");
+    }
+    {
+        std::vector<int> foo{};
+        for (int i{1}; i <= 100; ++i) {
+            foo.push_back(i);
+        }
+        auto odd = [](int a){return (a%2 == 0);};
+        auto bar = filter(odd, foo);
+        EXPECT_EQ(foo.size()/2, bar.size(), "filter for std::vector");
+    }
+    {
+        auto foo = std::vector<unsigned int>{};
+        for (size_t i{1}; i<=5; ++i) {
+            foo.push_back(i);
+        }
+        auto add = [](int a, int b){return (a+b);};
+        auto bar = foldl(add, static_cast<unsigned int>(0), foo);
+        EXPECT_EQ(static_cast<unsigned int>(15), bar, "foldl of std::vector");
+    }
 
     print_summary();
     return failed;
