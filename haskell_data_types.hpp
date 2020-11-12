@@ -584,6 +584,13 @@ auto filter(C1 fun, std::vector<Item> lst) {
     return result;
 }
 
+template<typename Item, typename C2> requires Callable2<C2, Item, Item>
+Item foldl(C2 fun, Item init, std::vector<Item> lst) {
+    for (const auto &lst_item : lst) {
+        init = fun(init, lst_item);
+    }
+    return init;
+}
 
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_

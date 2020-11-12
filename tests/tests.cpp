@@ -469,6 +469,15 @@ int main() {
         auto bar = filter(odd, foo);
         EXPECT_EQ(foo.size()/2, bar.size(), "filter for std::vector");
     }
+    {
+        auto foo = std::vector<unsigned int>{};
+        for (size_t i{1}; i<=5; ++i) {
+            foo.push_back(i);
+        }
+        auto add = [](int a, int b){return (a+b);};
+        auto bar = foldl(add, static_cast<unsigned int>(0), foo);
+        EXPECT_EQ(static_cast<unsigned int>(15), bar, "foldl of std::vector");
+    }
 
     print_summary();
     return failed;
