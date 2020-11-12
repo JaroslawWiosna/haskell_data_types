@@ -604,6 +604,20 @@ static std::vector<T> mappend(std::vector<T> a, std::vector<T> b) {
     }
     return a;
 }
+
+template<typename T1, typename T2, typename C2> requires Callable2<C2, T1, T2>
+auto liftA2(C2 fun, std::vector<T1> a, std::vector<T2> b) {
+    using Newtype = decltype(std::declval<C2>().operator()(T1{}, T2{}));
+    std::vector<Newtype> result{};
+    for (const auto &a_item : a) {
+        for (const auto &b_item : b) {
+            result.push(fun(a_item, a_item));
+        }
+    }
+    return result;
+}
+
+
 } // namespace haskell_data_types
 #endif // HASKELL_DATA_TYPES_HPP_
 
